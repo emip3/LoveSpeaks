@@ -34,7 +34,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				LoveSpeaksML.mlmodel,
-				LoveSpeaksML.mlproj,
 			);
 			target = ADA295BF2F93FFE4004161B4 /* LoveSpeaksTests */;
 		};
@@ -42,7 +41,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				LoveSpeaksML.mlmodel,
-				LoveSpeaksML.mlproj,
 			);
 			target = ADA295C92F93FFE4004161B4 /* LoveSpeaksUITests */;
 		};
