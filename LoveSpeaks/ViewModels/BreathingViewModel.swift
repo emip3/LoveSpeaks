@@ -2,8 +2,6 @@
 //  BreathingViewModel.swift
 //  LoveSpeaks
 //
-//  Created by Emiliano Ruíz Plancarte on 19/04/26.
-//
 
 import SwiftUI
 import Combine
@@ -17,9 +15,9 @@ enum BreathPhase: String {
 @MainActor
 final class BreathingViewModel: ObservableObject {
     @Published var phase: BreathPhase = .inhale
-    @Published var scale: CGFloat = 1.0
-    @Published var cycleCount: Int = 0
-    @Published var finished: Bool = false
+    @Published var scale: CGFloat     = 1.0
+    @Published var cycleCount: Int    = 0
+    @Published var finished: Bool     = false
 
     let totalCycles = 3
 
@@ -43,6 +41,18 @@ final class BreathingViewModel: ObservableObject {
         runCycle()
     }
 
+    // MARK: - Reiniciar ejercicio (para el botón "Seguir respirando")
+    func restart() {
+        finished   = false
+        cycleCount = 0
+        scale      = 1.0
+        phase      = .inhale
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
+            self?.runCycle()
+        }
+    }
+
+    // MARK: - Ciclo privado
     private func runCycle() {
         guard cycleCount < totalCycles else {
             withAnimation { finished = true }
