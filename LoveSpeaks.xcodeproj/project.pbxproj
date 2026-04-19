@@ -33,6 +33,7 @@
 		ADA295F42F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				LoveSpeaksML.mlmodel,
 				LoveSpeaksML.mlproj,
 			);
 			target = ADA295BF2F93FFE4004161B4 /* LoveSpeaksTests */;
@@ -40,6 +41,7 @@
 		ADA295F52F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				LoveSpeaksML.mlmodel,
 				LoveSpeaksML.mlproj,
 			);
 			target = ADA295C92F93FFE4004161B4 /* LoveSpeaksUITests */;
