@@ -29,9 +29,30 @@
 		ADA295CA2F93FFE4004161B4 /* LoveSpeaksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoveSpeaksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		ADA295F42F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LoveSpeaksML.mlmodel,
+			);
+			target = ADA295BF2F93FFE4004161B4 /* LoveSpeaksTests */;
+		};
+		ADA295F52F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LoveSpeaksML.mlmodel,
+			);
+			target = ADA295C92F93FFE4004161B4 /* LoveSpeaksUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		ADA295B52F93FFE3004161B4 /* LoveSpeaks */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				ADA295F42F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */,
+				ADA295F52F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */,
+			);
 			path = LoveSpeaks;
 			sourceTree = "<group>";
 		};
@@ -398,6 +419,7 @@
 				DEVELOPMENT_TEAM = C6DY3RC8SP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "<key>NSMicrophoneUsageDescription</key>\n<string>LoveSpeaks listens for baby sounds to help deaf parents stay connected.</string>";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -430,6 +452,7 @@
 				DEVELOPMENT_TEAM = C6DY3RC8SP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "<key>NSMicrophoneUsageDescription</key>\n<string>LoveSpeaks listens for baby sounds to help deaf parents stay connected.</string>";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
