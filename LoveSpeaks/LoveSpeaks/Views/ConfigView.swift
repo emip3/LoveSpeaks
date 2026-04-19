@@ -7,4 +7,4 @@
 
 // Configuración general de la app
 
-// TODO: 
+// TODO: x
