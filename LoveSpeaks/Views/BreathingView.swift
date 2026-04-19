@@ -105,7 +105,7 @@ struct BreathingFinishView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color.lsMint.opacity(0.35), Color.white],
+                colors: [Color.lsMenta.opacity(0.35), Color.white],
                 startPoint: .top,
                 endPoint: .bottom
             )

@@ -74,7 +74,7 @@ struct StatsSummaryCard: View {
 
             HStack(spacing: 10) {
                 MiniStatCard(value: "\(viewModel.totalEvents)", label: "Eventos",   color: Color.lsSky)
-                MiniStatCard(value: "\(viewModel.happyPercent)%", label: "Bienestar", color: Color.lsMint)
+                MiniStatCard(value: "\(viewModel.happyPercent)%", label: "Bienestar", color: Color.lsMenta)
                 MiniStatCard(value: "\(viewModel.alertEvents)",  label: "Alertas",  color: Color.lsSalmon)
             }
 
@@ -86,7 +86,7 @@ struct StatsSummaryCard: View {
                     Spacer()
                     Text("\(viewModel.happyPercent)%")
                         .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundColor(Color.lsMint)
+                        .foregroundColor(Color.lsMenta)
                 }
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
@@ -96,7 +96,7 @@ struct StatsSummaryCard: View {
                         RoundedRectangle(cornerRadius: 99)
                             .fill(
                                 LinearGradient(
-                                    colors: [Color.lsMint, Color.lsSky],
+                                    colors: [Color.lsMenta, Color.lsSky],
                                     startPoint: .leading,
                                     endPoint: .trailing
                                 )

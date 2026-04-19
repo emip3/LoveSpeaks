@@ -70,7 +70,7 @@ struct ProfileView: View {
                 HStack {
                     Text("Tranquilo")
                         .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundColor(Color.lsMint)
+                        .foregroundColor(Color.lsMenta)
                     Spacer()
                     Text("Inquieto")
                         .font(.system(size: 11, weight: .medium, design: .rounded))
@@ -82,7 +82,7 @@ struct ProfileView: View {
                             .fill(Color(UIColor.systemGray5))
                             .frame(height: 8)
                         LinearGradient(
-                            colors: [Color.lsMint, Color.lsSky],
+                            colors: [Color.lsMenta, Color.lsSky],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -109,7 +109,7 @@ struct ProfileView: View {
                 label: "HRV (ms)",
                 value: viewModel.hrv,
                 trend: viewModel.hrvTrend,
-                color: Color.lsMint
+                color: Color.lsMenta
             )
         }
     }

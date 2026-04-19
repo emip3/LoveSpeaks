@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - LoveSpeaks Brand Colors
 
 extension Color {
-    static let lsMint    = Color ("Mint")//Color(red: 0.722, green: 0.949, blue: 0.902) // #B8F2E6
+    static let lsMenta    = Color ("Menta")//Color(red: 0.722, green: 0.949, blue: 0.902) // #B8F2E6
     static let lsSky     = Color ("Sky")//Color(red: 0.682, green: 0.851, blue: 0.878) // #AED9E0
     static let lsSalmon  = Color ("Salmon")//(red: 1.000, green: 0.651, blue: 0.620) // #FFA69E
     static let lsCream   = Color ("Cream") //(red: 0.980, green: 0.953, blue: 0.867) // #FAF3DD

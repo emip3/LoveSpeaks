@@ -11,7 +11,6 @@ import SwiftUI
 // Single source of truth used by HomeViewModel, SummaryView, and FullDataView.
 
 enum SoundCategory: String, CaseIterable {
-    case happy      = "Happy"
     case hungry     = "Hungry"
     case discomfort = "Discomfort"
     case tired      = "Tired"
@@ -24,7 +23,7 @@ enum SoundCategory: String, CaseIterable {
 
     var displayTitle: String {
         switch self {
-        case .happy:      return "Baby is happy!"
+    
         case .hungry:     return "Baby is hungry"
         case .discomfort: return "Baby is uncomfortable"
         case .tired:      return "Baby is sleepy"
@@ -37,7 +36,7 @@ enum SoundCategory: String, CaseIterable {
 
     var displayEmoji: String {
         switch self {
-        case .happy:      return "😄"
+        
         case .hungry:     return "🍼"
         case .discomfort: return "😣"
         case .tired:      return "😴"
@@ -52,7 +51,7 @@ enum SoundCategory: String, CaseIterable {
 
     var primaryColor: Color {
         switch self {
-        case .happy:      return Color(red: 1.0,  green: 0.85, blue: 0.0)
+        
         case .hungry:     return Color(red: 1.0,  green: 0.55, blue: 0.0)
         case .discomfort: return Color(red: 0.95, green: 0.25, blue: 0.25)
         case .tired:      return Color(red: 0.55, green: 0.40, blue: 0.85)
@@ -69,7 +68,7 @@ enum SoundCategory: String, CaseIterable {
 
     var icon: String {
         switch self {
-        case .happy:      return "face.smiling.fill"
+        
         case .hungry:     return "fork.knife"
         case .discomfort: return "bandage.fill"
         case .tired:      return "moon.fill"

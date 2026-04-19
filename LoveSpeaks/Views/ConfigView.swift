@@ -25,7 +25,7 @@ struct ConfigView: View {
                     )
                     LSToggleRow(
                         icon: "bell.fill",
-                        iconColor: Color.lsMint,
+                        iconColor: Color.lsMenta,
                         title: "Notificaciones Push",
                         subtitle: "Recibe alertas cuando se detecte un sonido",
                         isOn: $pushNotifications
@@ -52,7 +52,7 @@ struct ConfigView: View {
                                 .font(Font.system(size: 15, weight: .medium, design: .rounded))
                         } icon: {
                             Image(systemName: "applewatch")
-                                .foregroundColor(Color.lsMint)
+                                .foregroundColor(Color.lsMenta)
                         }
                     }
                 } header: {
