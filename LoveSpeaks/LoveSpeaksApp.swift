@@ -1,17 +1,27 @@
-//
-//  LoveSpeaksApp.swift
-//  LoveSpeaks
-//
-//  Created by Emiliano Ruíz Plancarte on 18/04/26.
-//
-
 import SwiftUI
-
+ 
 @main
 struct LoveSpeaksApp: App {
+    @State private var showSplash = true
+ 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Group {
+                if showSplash {
+                    SplashView()
+                        .transition(.opacity)
+                } else {
+                    ContentView()
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.6), value: showSplash)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    showSplash = false
+                }
+            }
         }
     }
 }
+ 
