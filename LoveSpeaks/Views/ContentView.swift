@@ -33,68 +33,42 @@ struct ContentView: View {
     @State private var selectedTab: AppTab = .home
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tag(AppTab.home)
-                SummaryView()
-                    .tag(AppTab.summary)
-                ProfileView()
-                    .tag(AppTab.profile)
-                ConfigView()
-                    .tag(AppTab.config)
-            }
-            .onAppear {
-                UITabBar.appearance().isHidden = true
-            }
-
-            FakeTabBar(selected: $selectedTab)
-        }
-        .ignoresSafeArea(edges: .bottom)
-    }
-}
-
-// MARK: - Custom Tab Bar
-
-struct FakeTabBar: View {
-    @Binding var selected: AppTab
-
-    var body: some View {
-        HStack(spacing: 0) {
-            ForEach(AppTab.allCases, id: \.rawValue) { tab in
-                Button {
-                    withAnimation(.spring(response: 0.3)) {
-                        selected = tab
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: tab.icon)
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(
-                                selected == tab ? Color.lsSalmon : Color.lsSlate.opacity(0.5)
-                            )
-                        Text(tab.label)
-                            .font(.system(size: 10, weight: .medium, design: .rounded))
-                            .foregroundColor(
-                                selected == tab ? Color.lsSalmon : Color.lsSlate.opacity(0.5)
-                            )
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 10)
-                    .padding(.bottom, 24)
+        TabView(selection: $selectedTab) {
+            
+            HomeView()
+                .tabItem {
+                    Label(AppTab.home.label, systemImage: AppTab.home.icon)
                 }
-            }
+                .tag(AppTab.home)
+
+            SummaryView()
+                .tabItem {
+                    Label(AppTab.summary.label, systemImage: AppTab.summary.icon)
+                }
+                .tag(AppTab.summary)
+
+            ProfileView()
+                .tabItem {
+                    Label(AppTab.profile.label, systemImage: AppTab.profile.icon)
+                }
+                .tag(AppTab.profile)
+
+            ConfigView()
+                .tabItem {
+                    Label(AppTab.config.label, systemImage: AppTab.config.icon)
+                }
+                .tag(AppTab.config)
         }
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color(UIColor.systemGray6))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 26, style: .continuous)
-                        .stroke(Color.black.opacity(0.07), lineWidth: 0.5)
-                )
-        )
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
+        // ESTA ES LA MAGIA: Cambia el color de acento de toda la barra
+        .accentColor(Color.lsSalmon)
+        .onAppear {
+            // Esto asegura que la barra tenga el material translúcido estándar de Apple
+            let appearance = UITabBarAppearance()
+            appearance.configureWithDefaultBackground()
+            
+            UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
     }
 }
 
