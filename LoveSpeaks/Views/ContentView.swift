@@ -5,12 +5,11 @@
 //  Created by Emiliano Ruíz Plancarte on 18/04/26.
 //
 
-// ContentView.swift
 import SwiftUI
- 
+
 enum AppTab: Int, CaseIterable {
     case home, summary, profile, config
- 
+
     var icon: String {
         switch self {
         case .home:    return "house.fill"
@@ -19,7 +18,7 @@ enum AppTab: Int, CaseIterable {
         case .config:  return "gearshape.fill"
         }
     }
- 
+
     var label: String {
         switch self {
         case .home:    return "Inicio"
@@ -29,10 +28,10 @@ enum AppTab: Int, CaseIterable {
         }
     }
 }
- 
+
 struct ContentView: View {
     @State private var selectedTab: AppTab = .home
- 
+
     var body: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $selectedTab) {
@@ -46,57 +45,36 @@ struct ContentView: View {
                     .tag(AppTab.config)
             }
             .onAppear {
-                // Ocultar la tab bar nativa aquí, no en init()
                 UITabBar.appearance().isHidden = true
             }
- 
+
             FakeTabBar(selected: $selectedTab)
         }
         .ignoresSafeArea(edges: .bottom)
-    @State private var selectedTab: Int = 0
-
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem { Label("Home", systemImage: "house.fill") }
-                .tag(0)
-
-            SummaryView()
-                .tabItem { Label("Summary", systemImage: "book.fill") }
-                .tag(1)
-
-            ProfileView()
-                .tabItem { Label("Profile", systemImage: "person.fill") }
-                .tag(2)
-            
-            ConfigView()
-                .tabItem { Label("Settings", systemImage: "gear") }
-                .tag(3)
-        }
-        .tint(.purple) // matches your app's color palette
     }
 }
- 
+
 // MARK: - Custom Tab Bar
+
 struct FakeTabBar: View {
     @Binding var selected: AppTab
- 
+
     var body: some View {
         HStack(spacing: 0) {
             ForEach(AppTab.allCases, id: \.rawValue) { tab in
                 Button {
-                    withAnimation(Animation.spring(response: 0.3)) {
+                    withAnimation(.spring(response: 0.3)) {
                         selected = tab
                     }
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: tab.icon)
-                            .font(Font.system(size: 20, weight: .medium))
+                            .font(.system(size: 20, weight: .medium))
                             .foregroundColor(
                                 selected == tab ? Color.lsSalmon : Color.lsSlate.opacity(0.5)
                             )
                         Text(tab.label)
-                            .font(Font.system(size: 10, weight: .medium, design: .rounded))
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
                             .foregroundColor(
                                 selected == tab ? Color.lsSalmon : Color.lsSlate.opacity(0.5)
                             )
@@ -119,6 +97,7 @@ struct FakeTabBar: View {
         .padding(.bottom, 8)
     }
 }
- 
-#Preview { ContentView() }
- 
+
+#Preview {
+    ContentView()
+}
