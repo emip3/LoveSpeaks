@@ -5,6 +5,11 @@
 //  Created by Emiliano Ruíz Plancarte on 18/04/26.
 //
 
+//
+//  HomeViewModel.swift
+//  LoveSpeaks
+//
+
 import Foundation
 import Combine
 import SwiftUI
@@ -18,7 +23,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var errorMessage: String? = nil
     @Published var showingError: Bool = false
 
-    // MARK: - Propiedades Privadas
+    // MARK: - Privado
     private let service = AudioClassifierService()
     private var cancellables = Set<AnyCancellable>()
 
@@ -29,11 +34,7 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Interfaz Pública
     func toggleListening() {
-        if isListening {
-            stopListening()
-        } else {
-            startListening()
-        }
+        isListening ? stopListening() : startListening()
     }
 
     func startListening() {
@@ -45,19 +46,16 @@ final class HomeViewModel: ObservableObject {
         currentSound = .idle
     }
 
-    // MARK: - Vinculación con el Servicio
+    // MARK: - Binding
     private func bindService() {
-        // Estado de escucha
         service.$isListening
             .receive(on: DispatchQueue.main)
             .assign(to: &$isListening)
 
-        // Sonido actual detectado
         service.$currentSound
             .receive(on: DispatchQueue.main)
             .assign(to: &$currentSound)
 
-        // Manejo de errores
         service.$error
             .receive(on: DispatchQueue.main)
             .compactMap { $0?.errorDescription }
@@ -68,11 +66,13 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // MARK: - Helpers de Texto y Color
+    // MARK: - Helpers de UI
     var statusText: String {
         if !isListening { return "Toca para empezar a escuchar" }
-        if currentSound.category == .quiet { return "Escuchando..." }
-        return "Detectado con \(currentSound.confidenceText) de confianza"
+        if currentSound.category == .crying {
+            return "Llanto detectado con \(currentSound.confidenceText) de confianza"
+        }
+        return "Escuchando..."
     }
 
     var buttonLabel: String {
@@ -82,7 +82,7 @@ final class HomeViewModel: ObservableObject {
     var buttonIcon: String {
         isListening ? "mic.fill" : "mic.slash.fill"
     }
-    
+
     var primaryActionButtonColor: Color {
         isListening ? Color.lsSlate.opacity(0.75) : currentSound.primaryColor.opacity(0.85)
     }

@@ -103,12 +103,12 @@ struct LSEventRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Circle()
-                .fill(event.category.color.opacity(0.2))
+                .fill(event.category.primaryColor.opacity(0.2))
                 .frame(width: 36, height: 36)
                 .overlay(
                     Image(systemName: event.category.icon)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(event.category.color)
+                        .foregroundColor(event.category.primaryColor)
                 )
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
@@ -130,7 +130,7 @@ struct LSEventRow: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(alignment: .leading) {
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.category.color)
+                .fill(event.category.primaryColor)
                 .frame(width: 3)
                 .padding(.vertical, 6)
         }

@@ -73,18 +73,18 @@ struct StatsSummaryCard: View {
                 .foregroundColor(Color.lsSlate)
 
             HStack(spacing: 10) {
-                MiniStatCard(value: "\(viewModel.totalEvents)", label: "Eventos",   color: Color.lsSky)
-                MiniStatCard(value: "\(viewModel.happyPercent)%", label: "Bienestar", color: Color.lsMint)
-                MiniStatCard(value: "\(viewModel.alertEvents)",  label: "Alertas",  color: Color.lsSalmon)
+                MiniStatCard(value: "\(viewModel.totalEvents)",  label: "Llantos",   color: Color.lsSalmon)
+                MiniStatCard(value: "\(viewModel.quietPeriods)", label: "Períodos quietos", color: Color.lsSky)
+                MiniStatCard(value: "\(viewModel.alertEvents)",  label: "Alertas",   color: Color.lsSalmon)
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text("Índice de bienestar del período")
+                    Text("Ratio de calma del período")
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundColor(Color.lsSlate)
                     Spacer()
-                    Text("\(viewModel.happyPercent)%")
+                    Text("\(viewModel.quietPercent)%")
                         .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundColor(Color.lsMint)
                 }
@@ -102,7 +102,7 @@ struct StatsSummaryCard: View {
                                 )
                             )
                             .frame(
-                                width: geo.size.width * (Double(viewModel.happyPercent) / 100.0),
+                                width: geo.size.width * (Double(viewModel.quietPercent) / 100.0),
                                 height: 7
                             )
                     }
@@ -147,41 +147,55 @@ struct FilterChipsRow: View {
     let selectedFilter: SoundCategory?
     let onSelect: (SoundCategory?) -> Void
 
+    // Solo crying y quiet
     let filters: [(String, SoundCategory?, String)] = [
-        ("Todos",     nil,          "square.grid.2x2.fill"),
-        ("Hambre",    .hungry,      "fork.knife"),
-        ("Cansancio", .tired,       "moon.fill"),
-        ("Malestar",  .discomfort,  "bandage.fill"),
-        ("Balbuceo",  .babbling,    "ellipsis.bubble.fill"),
-        ("Risa",      .laughter,    "face.smiling.fill"),
-        ("Llanto",    .crying,         "drop.fill"),
+        ("Todos",   nil,     "square.grid.2x2.fill"),
+        ("Llanto",  .crying, "drop.fill"),
+        ("Quieto",  .quiet,  "speaker.slash.fill"),
     ]
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(filters, id: \.0) { label, category, icon in
-                    let isSelected = selectedFilter == category
-                    let chipColor  = category?.color ?? Color.lsSky
-
-                    Button {
-                        onSelect(category)
-                    } label: {
-                        HStack(spacing: 5) {
-                            Image(systemName: icon)
-                                .font(.system(size: 11, weight: .medium))
-                            Text(label)
-                                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        }
-                        .foregroundColor(isSelected ? Color.white : chipColor)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .background(isSelected ? chipColor : chipColor.opacity(0.12))
-                        .clipShape(Capsule())
-                    }
+                    FilterChip(
+                        label: label,
+                        icon: icon,
+                        category: category,
+                        isSelected: selectedFilter == category,
+                        onSelect: { onSelect(category) }
+                    )
                 }
             }
             .padding(.vertical, 2)
+        }
+    }
+}
+
+struct FilterChip: View {
+    let label: String
+    let icon: String
+    let category: SoundCategory?
+    let isSelected: Bool
+    let onSelect: () -> Void
+    
+    private var chipColor: Color {
+        category?.primaryColor ?? Color.lsSky
+    }
+    
+    var body: some View {
+        Button(action: onSelect) {
+            HStack(spacing: 5) {
+                Image(systemName: icon)
+                    .font(.system(size: 11, weight: .medium))
+                Text(label)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+            }
+            .foregroundColor(isSelected ? Color.white : chipColor)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(isSelected ? chipColor : chipColor.opacity(0.12))
+            .clipShape(Capsule())
         }
     }
 }
@@ -243,12 +257,12 @@ struct HistoryEventRow: View {
     private var timelineColumn: some View {
         VStack(spacing: 0) {
             Circle()
-                .fill(event.category.color)
+                .fill(event.category.primaryColor)
                 .frame(width: 10, height: 10)
                 .padding(.top, 16)
             if !isLast {
                 Rectangle()
-                    .fill(event.category.color.opacity(0.2))
+                    .fill(event.category.primaryColor.opacity(0.2))
                     .frame(width: 1.5)
                     .frame(maxHeight: .infinity)
             }
@@ -259,12 +273,12 @@ struct HistoryEventRow: View {
     private var eventContent: some View {
         HStack(alignment: .top, spacing: 10) {
             Circle()
-                .fill(event.category.color.opacity(0.15))
+                .fill(event.category.primaryColor.opacity(0.15))
                 .frame(width: 34, height: 34)
                 .overlay(
                     Image(systemName: event.category.icon)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(event.category.color)
+                        .foregroundColor(event.category.primaryColor)
                 )
                 .padding(.top, 10)
 

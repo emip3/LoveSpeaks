@@ -6,144 +6,159 @@
 //
 
 import SwiftUI
+import Foundation
+import Combine
+import SoundAnalysis
+import AVFoundation
 
 // MARK: - SoundCategory
-// Single source of truth used by HomeViewModel, SummaryView, and FullDataView.
-
 enum SoundCategory: String, CaseIterable {
-    case happy      = "Happy"
-    case hungry     = "Hungry"
-    case discomfort = "Discomfort"
-    case tired      = "Tired"
-    case babbling   = "Babbling"
-    case crying     = "Crying"
-    case laughter   = "Laughter"
-    case quiet      = "Quiet"
-
-    // MARK: Display
+    case crying = "crying_sobbing"  
+    case quiet  = "quiet"
 
     var displayTitle: String {
         switch self {
-        case .happy:      return "Baby is happy!"
-        case .hungry:     return "Baby is hungry"
-        case .discomfort: return "Baby is uncomfortable"
-        case .tired:      return "Baby is sleepy"
-        case .babbling:   return "Baby is talking"
-        case .crying:     return "Baby is crying"
-        case .laughter:   return "Baby is laughing"
-        case .quiet:      return "All quiet"
+        case .crying: return "Bebé llorando"
+        case .quiet:  return "Todo tranquilo"
         }
     }
 
     var displayEmoji: String {
         switch self {
-        case .happy:      return "😄"
-        case .hungry:     return "🍼"
-        case .discomfort: return "😣"
-        case .tired:      return "😴"
-        case .babbling:   return "🗣️"
-        case .crying:     return "😢"
-        case .laughter:   return "😂"
-        case .quiet:      return "🌙"
+        case .crying: return "😢"
+        case .quiet:  return "🌙"
         }
     }
-
-    // MARK: Colors (used by HomeView detection circle)
 
     var primaryColor: Color {
         switch self {
-        case .happy:      return Color(red: 1.0,  green: 0.85, blue: 0.0)
-        case .hungry:     return Color(red: 1.0,  green: 0.55, blue: 0.0)
-        case .discomfort: return Color(red: 0.95, green: 0.25, blue: 0.25)
-        case .tired:      return Color(red: 0.55, green: 0.40, blue: 0.85)
-        case .babbling:   return Color(red: 0.25, green: 0.75, blue: 0.65)
-        case .crying:     return Color(red: 0.90, green: 0.20, blue: 0.20)
-        case .laughter:   return Color(red: 1.0,  green: 0.75, blue: 0.20)
-        case .quiet:      return Color(red: 0.55, green: 0.60, blue: 0.65)
+        case .crying: return Color.red
+        case .quiet:  return Color.gray
         }
     }
 
-    var secondaryColor: Color { primaryColor.opacity(0.25) }
-
-    // MARK: Icon (used by SummaryView and FullDataView)
+    var secondaryColor: Color { primaryColor.opacity(0.2) }
 
     var icon: String {
         switch self {
-        case .happy:      return "face.smiling.fill"
-        case .hungry:     return "fork.knife"
-        case .discomfort: return "bandage.fill"
-        case .tired:      return "moon.fill"
-        case .babbling:   return "ellipsis.bubble.fill"
-        case .crying:     return "drop.fill"
-        case .laughter:   return "face.smiling.fill"
-        case .quiet:      return "speaker.slash.fill"
-        }
-    }
-
-    // MARK: Color alias (used by SummaryView / FullDataView chip rows)
-
-    var color: Color { primaryColor }
-
-    // MARK: ML Label Mapping
-
-    static func from(label: String) -> SoundCategory {
-        switch label.lowercased() {
-        case "laughter":                                        return .laughter
-        case "babbling":                                        return .babbling
-        case "hungry":                                          return .hungry
-        case "discomfort":                                      return .discomfort
-        case "tired":                                           return .tired
-        case "ambient_noise":                                   return .quiet
-        case "baby_cry_infant_cry", "crying",
-             "baby crying", "infant crying":                    return .crying
-        default:                                                return .quiet
+        case .crying: return "drop.fill"
+        case .quiet:  return "speaker.slash.fill"
         }
     }
 }
 
-// MARK: - SoundEvent
-// A single detected or logged sound event. Used by SummaryView and FullDataView.
+// MARK: - BabySound Model
+struct BabySound: Equatable {
+    let category: SoundCategory
+    let confidence: Double
 
+    var displayTitle: String  { category.displayTitle }
+    var displayEmoji: String  { category.displayEmoji }
+    var primaryColor: Color   { category.primaryColor }
+    var secondaryColor: Color { category.secondaryColor }
+    var confidenceText: String { "\(Int(confidence * 100))%" }
+
+    static let idle = BabySound(category: .quiet, confidence: 1.0)
+}
+
+// MARK: - Sound Classifier Manager
+class SoundClassifierManager: NSObject, ObservableObject, SNResultsObserving {
+    @Published var currentSound: BabySound = .idle
+    @Published var isRunning: Bool = false
+
+    // ✅ Fix: umbral reducido a 0.4 para testing; súbelo a 0.65–0.75 en producción
+    private let confidenceThreshold: Double = 0.4
+
+    // ✅ Identificador real del clasificador de Apple para llanto
+    private let cryingIdentifier = "crying_sobbing"
+
+    private let audioEngine = AVAudioEngine()
+    private var analyzer: SNAudioStreamAnalyzer?
+    private let analysisQueue = DispatchQueue(label: "com.lovespeaks.analysis")
+
+    func toggleDetection() {
+        if isRunning { stop() } else { start() }
+    }
+
+    private func start() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .measurement, options: .duckOthers)
+            try session.setActive(true)
+
+            let inputNode = audioEngine.inputNode
+            let format = inputNode.outputFormat(forBus: 0)
+            analyzer = SNAudioStreamAnalyzer(format: format)
+
+            let request = try SNClassifySoundRequest(classifierIdentifier: .version1)
+            try analyzer?.add(request, withObserver: self)
+
+            inputNode.installTap(onBus: 0, bufferSize: 8192, format: format) { [weak self] buffer, time in
+                self?.analysisQueue.async {
+                    self?.analyzer?.analyze(buffer, atAudioFramePosition: time.sampleTime)
+                }
+            }
+
+            try audioEngine.start()
+            isRunning = true
+            print("✅ Detección de sonido iniciada correctamente.")
+        } catch {
+            print("❌ Error al iniciar detección: \(error)")
+        }
+    }
+
+    private func stop() {
+        audioEngine.stop()
+        audioEngine.inputNode.removeTap(onBus: 0)
+        analyzer = nil
+        isRunning = false
+        currentSound = .idle
+        print("🛑 Detección de sonido detenida.")
+    }
+
+    // MARK: - SNResultsObserving
+    func request(_ request: SNRequest, didProduce result: SNResult) {
+        guard let result = result as? SNClassificationResult else { return }
+
+        // 🔍 DEBUG: imprime los top 5 identificadores con su confianza.
+        // Úsalo para confirmar el identificador correcto en tu versión de iOS.
+        // Comenta o elimina este bloque una vez que todo funcione.
+        #if DEBUG
+        let top5 = result.classifications.prefix(5)
+        print("──────────────────────────────────")
+        for c in top5 {
+            print("🔊 \(c.identifier.padding(toLength: 30, withPad: " ", startingAt: 0)) → \(Int(c.confidence * 100))%")
+        }
+        #endif
+
+        // ✅ Busca el identificador correcto de llanto
+        let target = result.classifications.first(where: { $0.identifier == cryingIdentifier })
+
+        DispatchQueue.main.async {
+            if let target, target.confidence > self.confidenceThreshold {
+                self.currentSound = BabySound(category: .crying, confidence: target.confidence)
+            } else {
+                self.currentSound = .idle
+            }
+        }
+    }
+
+    func request(_ request: SNRequest, didFailWithError error: Error) {
+        print("❌ Error en el clasificador: \(error.localizedDescription)")
+    }
+
+    func requestDidComplete(_ request: SNRequest) {
+        print("ℹ️ Clasificador completado.")
+    }
+}
+
+// MARK: - Historial
 struct SoundEvent: Identifiable {
     let id = UUID()
     let time: String
     let category: SoundCategory
     let detail: String
 }
-
-// MARK: - BabySound
-// Real-time detection result published by AudioClassifierService → HomeViewModel.
-
-struct BabySound: Equatable {
-    let category: SoundCategory
-    let confidence: Double
-    let source: DetectionSource
-
-    var displayTitle: String  { category.displayTitle }
-    var displayEmoji: String  { category.displayEmoji }
-    var primaryColor: Color   { category.primaryColor }
-    var secondaryColor: Color { category.secondaryColor }
-
-    var confidenceText: String { "\(Int(confidence * 100))%" }
-
-    static let idle = BabySound(category: .quiet, confidence: 1.0, source: .none)
-
-    static func == (lhs: BabySound, rhs: BabySound) -> Bool {
-        lhs.category == rhs.category && lhs.source == rhs.source
-    }
-}
-
-// MARK: - DetectionSource
-
-enum DetectionSource: String, Equatable {
-    case customModel = "Custom Model"
-    case appleModel  = "Apple Sound Analysis"
-    case merged      = "Combined"
-    case none        = "—"
-}
-
-// MARK: - BabyRecord
-// A day's worth of logged sound events. Used by FullDataView and FullDataViewModel.
 
 struct BabyRecord: Identifiable {
     let id = UUID()
@@ -154,49 +169,8 @@ struct BabyRecord: Identifiable {
 
 extension BabyRecord {
     static let sampleHistory: [BabyRecord] = [
-        BabyRecord(
-            date: "Hoy",
-            dayLabel: "Sábado 18 abr",
-            events: [
-                SoundEvent(time: "07:12 AM", category: .hungry,     detail: "Llanto rítmico al despertar."),
-                SoundEvent(time: "09:45 AM", category: .babbling,   detail: "Balbuceo activo post desayuno."),
-                SoundEvent(time: "11:30 AM", category: .tired,      detail: "Frotando ojos, señal de sueño."),
-                SoundEvent(time: "14:45 PM", category: .discomfort, detail: "Posibles gases tras la siesta."),
-                SoundEvent(time: "16:05 PM", category: .babbling,   detail: "Comunicación activa. Todo bien."),
-                SoundEvent(time: "18:22 PM", category: .laughter,   detail: "Risa espontánea prolongada."),
-            ]
-        ),
-        BabyRecord(
-            date: "Ayer",
-            dayLabel: "Viernes 17 abr",
-            events: [
-                SoundEvent(time: "06:55 AM", category: .hungry,     detail: "Llanto al despertar, hambre."),
-                SoundEvent(time: "10:10 AM", category: .laughter,   detail: "Risa al interactuar con papá."),
-                SoundEvent(time: "13:00 PM", category: .crying,     detail: "Llanto fuerte sin causa clara."),
-                SoundEvent(time: "15:30 PM", category: .tired,      detail: "Señales de cansancio post juego."),
-                SoundEvent(time: "19:40 PM", category: .babbling,   detail: "Balbuceo tranquilo antes de dormir."),
-            ]
-        ),
-        BabyRecord(
-            date: "Hace 2 días",
-            dayLabel: "Jueves 16 abr",
-            events: [
-                SoundEvent(time: "08:00 AM", category: .hungry,     detail: "Llanto matutino regular."),
-                SoundEvent(time: "11:15 AM", category: .discomfort, detail: "Incomodidad, postura incómoda."),
-                SoundEvent(time: "14:00 PM", category: .laughter,   detail: "Risa durante tummy time."),
-                SoundEvent(time: "17:50 PM", category: .babbling,   detail: "Muchas vocales nuevas hoy."),
-            ]
-        ),
-        BabyRecord(
-            date: "Hace 3 días",
-            dayLabel: "Miércoles 15 abr",
-            events: [
-                SoundEvent(time: "07:30 AM", category: .hungry,     detail: "Despertó con hambre puntual."),
-                SoundEvent(time: "09:00 AM", category: .tired,      detail: "Siesta temprana, sueño profundo."),
-                SoundEvent(time: "12:45 PM", category: .crying,     detail: "Llanto por cambio de pañal."),
-                SoundEvent(time: "16:20 PM", category: .babbling,   detail: "Sesión larga de balbuceo."),
-                SoundEvent(time: "20:05 PM", category: .tired,      detail: "Señales claras de ir a dormir."),
-            ]
-        ),
+        BabyRecord(date: "Hoy", dayLabel: "Sábado 18 abr", events: [
+            SoundEvent(time: "07:12 AM", category: .crying, detail: "Llanto al despertar.")
+        ])
     ]
 }

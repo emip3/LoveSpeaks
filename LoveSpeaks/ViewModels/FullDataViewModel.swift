@@ -38,20 +38,20 @@ final class FullDataViewModel: ObservableObject {
         history.flatMap(\.events).count
     }
 
-    var happyEvents: Int {
+    var quietPeriods: Int {
         history.flatMap(\.events).filter {
-            $0.category == .laughter || $0.category == .babbling
+            $0.category == .quiet
         }.count
     }
 
     var alertEvents: Int {
         history.flatMap(\.events).filter {
-            $0.category == .crying || $0.category == .discomfort
+            $0.category == .crying
         }.count
     }
 
-    var happyPercent: Int {
+    var quietPercent: Int {
         guard totalEvents > 0 else { return 0 }
-        return Int((Double(happyEvents) / Double(totalEvents)) * 100)
+        return Int((Double(quietPeriods) / Double(totalEvents)) * 100)
     }
 }

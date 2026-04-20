@@ -17,7 +17,7 @@ struct ConfigView: View {
                         isOn: $shareHealthData
                     )
                     LSToggleRow(
-                        icon: "mic.fill",
+                        icon: "waveform.badge.microphone",
                         iconColor: Color.lsSky,
                         title: "Permisos de Micrófono",
                         subtitle: "Necesario para detectar sonidos del bebé",
@@ -42,7 +42,7 @@ struct ConfigView: View {
                             Text("Perfil del bebé")
                                 .font(Font.system(size: 15, weight: .medium, design: .rounded))
                         } icon: {
-                            Image(systemName: "figure.and.child.holdinghands")
+                            Image(systemName: "figure.child")
                                 .foregroundColor(Color.lsSky)
                         }
                     }
