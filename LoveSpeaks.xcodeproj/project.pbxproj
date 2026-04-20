@@ -30,19 +30,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		ADA295F42F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */ = {
+		7C0E01DC2F95BB8C002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Profile 1.mlmodel",
+				SaludProfile.mlmodel,
 			);
 			target = ADA295BF2F93FFE4004161B4 /* LoveSpeaksTests */;
 		};
-		ADA295F52F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */ = {
+		7C0E01DD2F95BB8C002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Profile 1.mlmodel",
+				SaludProfile.mlmodel,
 			);
 			target = ADA295C92F93FFE4004161B4 /* LoveSpeaksUITests */;
+		};
+		7C0E01DF2F95C1ED002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaks" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = ADA295B22F93FFE3004161B4 /* LoveSpeaks */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -50,8 +57,9 @@
 		ADA295B52F93FFE3004161B4 /* LoveSpeaks */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				ADA295F42F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */,
-				ADA295F52F945762004161B4 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */,
+				7C0E01DF2F95C1ED002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaks" target */,
+				7C0E01DC2F95BB8C002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksTests" target */,
+				7C0E01DD2F95BB8C002BA741 /* Exceptions for "LoveSpeaks" folder in "LoveSpeaksUITests" target */,
 			);
 			path = LoveSpeaks;
 			sourceTree = "<group>";
@@ -417,9 +425,11 @@
 				CODE_SIGN_ENTITLEMENTS = LoveSpeaks/LoveSpeaks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QKQHBA6T5N;
+				DEVELOPMENT_TEAM = H3WW9957Q9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LoveSpeaks/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "<key>NSHealthShareUsageDescription</key>\n<string>LoveSpeaks reads your health data — sleep, heart rate, HRV, and steps — to monitor your wellbeing as a parent.</string>";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "<key>NSMicrophoneUsageDescription</key>\n<string>LoveSpeaks listens for baby sounds to help deaf parents stay connected.</string>";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -452,9 +462,11 @@
 				CODE_SIGN_ENTITLEMENTS = LoveSpeaks/LoveSpeaks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QKQHBA6T5N;
+				DEVELOPMENT_TEAM = H3WW9957Q9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LoveSpeaks/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "<key>NSHealthShareUsageDescription</key>\n<string>LoveSpeaks reads your health data — sleep, heart rate, HRV, and steps — to monitor your wellbeing as a parent.</string>";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "<key>NSMicrophoneUsageDescription</key>\n<string>LoveSpeaks listens for baby sounds to help deaf parents stay connected.</string>";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
